@@ -7,7 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <title>Friend Finder</title>
 </head>
 
@@ -203,36 +209,74 @@
             </div>
             <button type="submit" class="btn btn-primary m-3" id="submit">Submit</button>
         </div>
-        <a href="#" class="border-right border-dark px-2">Api Friends List</a>
-        <a href="#" class="px-1 mt-4">GitHub Repo</a>
+        <a href="/api/friends" class="border-right border-dark px-2">Api Friends List</a>
+        <a href="https://github.com/Lara-E/FriendFinder" class="px-1 mt-4">GitHub Repo</a>
+    </div>
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Your Best Match</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="match-name"></h4>
+                    <img id="match-photo" src="" alt="" width="250px">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
 
-        $("#submit").on("click", function(event) {
+        function validateForm() {
+            var isValid = true;
+            $(".form-control").each(function () {
+                if ($(this).val() === "") {
+                    isValid = false;
+                }
+            });
+            return isValid;
+        };
+
+        $("#submit").on("click", function (event) {
             event.preventDefault();
-            var addFriend = {
-                name: $("#name").val().trim(),
-                role: $("#photo").val().trim(),
-                scores: [
-                    $("#q1").val(),
-                    $("#q2").val(),
-                    $("#q3").val(),
-                    $("#q4").val(),
-                    $("#q5").val(),
-                    $("#q6").val(),
-                    $("#q7").val(),
-                    $("#q8").val(),
-                    $("#q9").val(),
-                    $("#q10").val(),
-                ]
-            };
-            console.log(addFriend)
-            $.post("/api/friends", addFriend)
-                .then(function (data) {
-                    // console.log(JSON.stringify(data));
-                    // alert("Adding character...");
-                });
+
+            if (validateForm() === true) {
+
+                var addFriend = {
+                    name: $("#name").val().trim(),
+                    role: $("#photo").val().trim(),
+                    scores: [
+                        $("#q1").val(),
+                        $("#q2").val(),
+                        $("#q3").val(),
+                        $("#q4").val(),
+                        $("#q5").val(),
+                        $("#q6").val(),
+                        $("#q7").val(),
+                        $("#q8").val(),
+                        $("#q9").val(),
+                        $("#q10").val(),
+                    ]
+                };
+                $.post("/api/friends", addFriend)
+                    .then(function (data) {
+                        $("#match-name").text(data.name);
+                        $("#match-photo").attr("src", data.photo)
+                        $("#modal").modal("show");
+                    })
+                $(".form-control").val("")
+            }
+            else {
+                alert("Your missing a required field")
+            }
         });
     </script>
 
