@@ -6,7 +6,7 @@ You can also view our JSON data of all stored friends using the route /api/frien
 **Note** *After cloning this repository you will need to run npm install in order for Friend Finder to work properly*
 
 ## Try It Out
-
+[Visit the Heroku Site](https://shielded-caverns-97462.herokuapp.com/)
 
 ## Technologies Used
 - Node.js
